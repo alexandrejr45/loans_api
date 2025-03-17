@@ -3,5 +3,5 @@ from django.urls import path
 from loan_simulation import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path('simulate-loan/', views.SimulateLoanView.as_view(), name='simulate_loan'),
 ]

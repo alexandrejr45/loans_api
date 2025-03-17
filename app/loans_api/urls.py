@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.urls import include, path
+from loan_simulation.views import CreateToken
 
 urlpatterns = [
-    path("simulate_loan/", include("loan_simulation.urls")),
-    path("admin/", admin.site.urls),
+    path('', include('loan_simulation.urls')),
+    path('auth-token/', CreateToken.as_view()),
+    path('admin/', admin.site.urls),
 ]
