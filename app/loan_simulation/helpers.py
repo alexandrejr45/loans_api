@@ -1,4 +1,44 @@
-from models import InterestTax, LoanSimulation, LoanSimulationResult
+from datetime import date
+from decimal import Decimal
+from loan_simulation.enums import InterestRateByAge
+from loan_simulation.models import InterestRate, LoanSimulation, LoanSimulationResult
+from math import pow
 
 def calculate_loan_simulation(loan_simulations: dict) -> LoanSimulationResult:
     pass
+
+
+def calculate_monthly_installments(loan_simulation: dict) -> Decimal:
+    interest_rate = calculate_interest_rate(
+        loan_simulation['client_birthdate']
+    ) / 12
+    loan_amount = loan_simulation['amount']
+    monthly_installment = Decimal(
+        (loan_amount * interest_rate) /
+        Decimal(1 - pow(1 + interest_rate, -loan_simulation['payment_period']))
+    ).quantize(Decimal('0.00'))
+
+    return monthly_installment
+
+
+def calculate_interest_rate(client_birthdate: date) -> Decimal:
+    total_days = (date.today() - client_birthdate)
+    client_age = int(total_days.days / 365)
+
+    return get_interest_rate(client_age)
+
+
+def get_interest_rate(client_age: int) -> Decimal:
+    tax_map = {
+        (17, 25): InterestRateByAge.YOUNG.value,
+        (25, 40): InterestRateByAge.ADULT.value,
+        (40, 60): InterestRateByAge.OLD_ADULT.value,
+        (60, 100): InterestRateByAge.ELDERLY.value
+    }
+
+    for age_range, tax in tax_map.items():
+        if age_range[0] < client_age <= age_range[1]:
+            return tax
+
+    return Decimal('0.00')
+

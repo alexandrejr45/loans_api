@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
@@ -6,6 +8,7 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework import authentication, permissions
 
 from loan_simulation.serializers import LoanSimulationSerializer
+from loan_simulation.helpers import calculate_loan_simulation
 
 class CreateToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -26,15 +29,17 @@ class SimulateLoanView(APIView):
 
     def post(self, request, format=None):
         """
-           Simulate a loan with the provided informations.
+           Realiza a simulação de um financiamento para um cliente.
         """
         try:
             serializer = LoanSimulationSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
+            loan_model = serializer.save()
+
             return Response(
                 status=HTTP_201_CREATED,
-                data=serializer.validated_data
+                data=asdict(loan_model)
             )
 
         except ValidationError as e:
