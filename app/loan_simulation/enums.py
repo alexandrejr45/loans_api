@@ -1,6 +1,7 @@
 from decimal import Decimal
 from enum import Enum
 
+
 class InterestRateByAge(Enum):
     YOUNG = Decimal('0.05')
     ADULT = Decimal('0.03')

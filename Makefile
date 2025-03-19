@@ -20,5 +20,11 @@ run-dev:
 clear:
 	docker-compose down -v
 
+lint:
+	@poetry run flake8 --show-source .
+
 stop:
 	docker-compose stop
+
+tests:
+	@poetry run pytest app/

@@ -3,23 +3,37 @@ from dataclasses import dataclass
 from decimal import Decimal
 from datetime import date
 
+
 @dataclass
-class InterestRate:
-    client_birthdate: date
-    current_date: date = date.today()
-    amount: Decimal = Decimal(0)
+class User:
+    name: str
+    last_name: str
+    document_number: str
+    birthdate: date
 
 
 @dataclass
-class LoanSimulation:
+class LoanSimulationRequest:
     amount: Decimal
-    client_birthdate: date
     payment_period: int
+    user: User
 
 
 @dataclass
-class LoanSimulationResult:
+class LoanSimulationResponse:
     id: uuid.UUID
-    total_amount: Decimal
     monthly_installment: Decimal
-    interest_total_amount: Decimal
+    total_amount: Decimal
+    total_interest_amount: Decimal
+    user: User
+
+    def __post_init__(self):
+        self.total_amount = Decimal(
+            self.total_amount
+        ).quantize(Decimal('0.00'))
+        self.monthly_installment = Decimal(
+            self.monthly_installment
+        ).quantize(Decimal('0.00'))
+        self.total_interest_amount = Decimal(
+            self.total_interest_amount
+        ).quantize(Decimal('0.00'))

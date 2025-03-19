@@ -1,12 +1,15 @@
 import pytest
 
-from decimal import Decimal
-from datetime import date
 
 @pytest.fixture
-def valid_loan_simulation_dict():
+def loan_simulation_payload():
     return {
-        'amount': Decimal('10000'),
-        'client_birthdate': date.fromisoformat('2000-12-09'),
-        'payment_period': 60
+        'amount': '10000',
+        'user': {
+            'name': 'José',
+            'last_name': 'Silva',
+            'document_number': '01234567890',
+            'birthdate': '2000-02-21'
+        },
+        'payment_period': 24
     }

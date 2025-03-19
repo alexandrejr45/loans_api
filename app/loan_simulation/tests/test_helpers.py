@@ -10,6 +10,7 @@ from loan_simulation.helpers import (
 )
 from loan_simulation.enums import InterestRateByAge
 
+
 class TestGetInterestRate:
 
     @pytest.mark.parametrize('client_age', [19, 25])
@@ -38,12 +39,12 @@ class TestCalculateMonthlyInstallments:
 
     def test_should_calculate_monthly_installments_with_valid_loan(
         self,
-        valid_loan_simulation_dict
+        loan_simulation_payload
     ):
         monthly_installment = calculate_monthly_installments(
-            valid_loan_simulation_dict
+            loan_simulation_payload
         )
 
         assert monthly_installment == self.calculate_monthly_installment(
-            valid_loan_simulation_dict
+            loan_simulation_payload
         )
