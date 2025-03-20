@@ -4,9 +4,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 INSTALLED_APPS = [
+    'loan_simulation.apps.LoanSimulationConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'loan_simulation.apps.LoanSimulationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

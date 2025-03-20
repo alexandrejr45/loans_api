@@ -1,10 +1,9 @@
 import pytest
-
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.test import APIClient
-from rest_framework.authtoken.models import Token
 
 pytestmark = pytest.mark.django_db
 

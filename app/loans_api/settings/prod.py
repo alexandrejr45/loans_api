@@ -1,5 +1,6 @@
 import os
-from loans_api.settings.base import *
+
+from loans_api.settings.base import *  # noqa
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 

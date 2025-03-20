@@ -1,13 +1,9 @@
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from validate_docbr import CPF, CNPJ
-
 from datetime import date
 
-from loan_simulation.models import (
-    LoanSimulationRequest,
-    User
-)
+from loan_simulation.models.dataclasses import LoanSimulationRequest, User
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from validate_docbr import CNPJ, CPF
 
 
 class UserSerializer(serializers.Serializer):

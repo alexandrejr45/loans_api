@@ -2,11 +2,13 @@ from datetime import date
 from decimal import Decimal
 from math import pow
 from uuid import uuid4
+
 from loan_simulation.enums import InterestRateByAge
-from loan_simulation.models import (
+from loan_simulation.models.dataclasses import (
     LoanSimulationRequest,
     LoanSimulationResponse
 )
+from rest_framework.exceptions import ValidationError
 
 
 def calculate_loan_simulation(
@@ -61,4 +63,4 @@ def get_interest_rate(client_age: int) -> Decimal:
         if age_range[0] < client_age <= age_range[1]:
             return tax
 
-    return Decimal('0.00')
+    raise ValidationError('Client age is not in a valid interval')
