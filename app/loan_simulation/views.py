@@ -1,9 +1,5 @@
 from dataclasses import asdict
 
-from loan_simulation.helpers.calculate_simulations import (
-    calculate_loan_simulation
-)
-from loan_simulation.serializers import LoanSimulationSerializer
 from rest_framework import authentication, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.exceptions import ValidationError
@@ -14,6 +10,11 @@ from rest_framework.status import (
     HTTP_500_INTERNAL_SERVER_ERROR
 )
 from rest_framework.views import APIView
+
+from loan_simulation.helpers.calculate_simulations import (
+    calculate_loan_simulation
+)
+from loan_simulation.serializers import LoanSimulationSerializer
 
 
 class CreateToken(ObtainAuthToken):

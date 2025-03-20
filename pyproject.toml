@@ -36,7 +36,7 @@ filterwarnings = "ignore"
 
 
 [tool.isort]
-known_first_party = "app"
+known_first_party = "loan_simulation"
 atomic = true
 line_length = 79
 multi_line_output = 3

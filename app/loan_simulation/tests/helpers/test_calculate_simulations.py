@@ -2,13 +2,14 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
+from rest_framework.exceptions import ValidationError
+
 from loan_simulation.enums import InterestRateByAge
 from loan_simulation.helpers.calculate_simulations import (
     calculate_interest_rate,
     calculate_monthly_installments,
     get_interest_rate
 )
-from rest_framework.exceptions import ValidationError
 
 
 class TestGetInterestRate:

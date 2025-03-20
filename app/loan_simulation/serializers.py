@@ -1,9 +1,10 @@
 from datetime import date
 
-from loan_simulation.models.dataclasses import LoanSimulationRequest, User
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from validate_docbr import CNPJ, CPF
+
+from loan_simulation.models.dataclasses import LoanSimulationRequest, User
 
 
 class UserSerializer(serializers.Serializer):

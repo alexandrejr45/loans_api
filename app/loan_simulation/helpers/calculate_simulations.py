@@ -3,12 +3,13 @@ from decimal import Decimal
 from math import pow
 from uuid import uuid4
 
+from rest_framework.exceptions import ValidationError
+
 from loan_simulation.enums import InterestRateByAge
 from loan_simulation.models.dataclasses import (
     LoanSimulationRequest,
     LoanSimulationResponse
 )
-from rest_framework.exceptions import ValidationError
 
 
 def calculate_loan_simulation(
