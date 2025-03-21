@@ -131,6 +131,7 @@ Esse resultado é armazenado no banco de dados, assim é possível recuperá-lo 
 
 #### Request POST
 
+Request
 ```sh
     {
       "amount": "10000",
@@ -141,6 +142,23 @@ Esse resultado é armazenado no banco de dados, assim é possível recuperá-lo 
          "birthdate": "1999-02-21"
       },
       "payment_period": 24
+    }
+```
+
+Response
+
+```sh
+    {
+      "id": "a769e2ca-f3ca-42aa-ba21-388ca9517a8e",
+      "monthly_installment": 429.81,
+      "total_amount": 10315.44,
+      "total_interest_amount": 315.44,
+      "user": {
+          "name": "José",
+          "last_name": "Silva",
+          "document_number": "01234567890",
+          "birthdate": "1999-02-21"
+      }
     }
 ```
 
@@ -162,7 +180,7 @@ Esse resultado é armazenado no banco de dados, assim é possível recuperá-lo 
     }'
 ```
 
-Ao realizar um request para criação de uma simulação, será necessário enviar os campos a seguir:
+Significado de cada atributo:
 
 - **amount**: Valor do empréstimo
 - **user.name**: Nome do cliente
@@ -170,6 +188,9 @@ Ao realizar um request para criação de uma simulação, será necessário envi
 - **document_number**: CPF ou CNPJ do cliente
 - **birthdate**: Data de nascimento do cliente
 - **payment_period**: Prazo de pagamento em meses do empréstimo
+- **monthly_installment**: Parcela mensal do empréstimo
+- **total_amount**: Valor total do empréstimo a pagar
+- **total_interest_amount**: Valor total dos juros aplicados
 
 
 #### Request GET

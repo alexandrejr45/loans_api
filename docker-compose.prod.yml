@@ -20,7 +20,7 @@ services:
       service: database
   nginx:
     container_name: loan_api_nginx
-    build: nginx
+    build: ./nginx
     volumes:
       - static_volume:/usr/loans_api/app/loans_api/staticfiles
     ports:
