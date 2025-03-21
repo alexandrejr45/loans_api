@@ -1,6 +1,3 @@
-from copy import deepcopy
-from unittest.mock import patch
-
 import pytest
 
 from loan_simulation.helpers.record_simulations import (
@@ -26,13 +23,11 @@ class TestSaveCustomerModel:
         self,
         loan_simulation_response_model
     ):
-        with patch('loan_simulation.models.loan_simulation.Customer.save') as (
-            mock_customer
-        ):
-            save_customer_model(loan_simulation_response_model.user)
-            save_customer_model(loan_simulation_response_model.user)
+        save_customer_model(loan_simulation_response_model.user)
+        save_customer_model(loan_simulation_response_model.user)
 
-        mock_customer.assert_called_once()
+        assert len(Customer.objects.all()) == 1
+
 
 class TestSaveLoanSimulation:
 
@@ -40,6 +35,22 @@ class TestSaveLoanSimulation:
         self,
         loan_simulation_response_model
     ):
-        simulation = save_loan_simulation(loan_simulation_response_model)
+        response_model = loan_simulation_response_model
+        save_loan_simulation(response_model)
+        saved_simulation = LoanSimulation.objects.all().first()
 
-        assert simulation == LoanSimulation.objects.all().first()
+        assert saved_simulation.simulation_id == response_model.id
+        assert saved_simulation.monthly_installment == (
+            response_model.monthly_installment
+        )
+        assert saved_simulation.total_amount == response_model.total_amount
+        assert saved_simulation.total_interest_amount == (
+            response_model.total_interest_amount
+        )
+
+        assert saved_simulation.user.name == response_model.user.name
+        assert saved_simulation.user.last_name == response_model.user.last_name
+        assert saved_simulation.user.document_number == (
+            response_model.user.document_number
+        )
+        assert saved_simulation.user.birthdate == response_model.user.birthdate

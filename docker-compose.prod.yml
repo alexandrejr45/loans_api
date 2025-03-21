@@ -1,0 +1,32 @@
+
+services:
+  api:
+    container_name: loan_api
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    command: gunicorn loans_api.wsgi:application --bind 0.0.0.0:9000 --workers=5
+    volumes:
+      - static_volume:/usr/loans_api/app/loans_api/staticfiles
+    ports:
+      - '9000:9000'
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - database
+  database:
+    extends:
+      file: docker-compose.yml
+      service: database
+  nginx:
+    container_name: loan_api_nginx
+    build: nginx
+    volumes:
+      - static_volume:/usr/loans_api/app/loans_api/staticfiles
+    ports:
+      - '1337:80'
+    depends_on:
+      - api
+volumes:
+  postgres_data:
+  static_volume:

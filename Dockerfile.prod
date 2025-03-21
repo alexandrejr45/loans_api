@@ -21,6 +21,23 @@ ENV VIRTUAL_ENV=/usr/loans_api/app/.venv \
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY app /usr/loans_api/app
+COPY app/ /usr/loans_api/app
+
+RUN mkdir /usr/loans_api/app/loans_api/staticfiles
+
+WORKDIR /usr/loans_api/app
+
+# Set user and group
+ARG user=django
+ARG group=django
+ARG uid=1000
+ARG gid=1000
+RUN groupadd -g ${gid} ${group}
+RUN useradd -u ${uid} -g ${group} -s /bin/sh -m ${user}
+
+# Switch to user
+RUN chown -R ${uid}:${gid} /usr/loans_api/app
+
+USER ${uid}:${gid}
 
 WORKDIR /usr/loans_api/app

@@ -10,7 +10,7 @@ class Customer(models.Model):
 
 class LoanSimulation(models.Model):
     user = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    simulation_id = models.UUIDField()
+    simulation_id = models.UUIDField(unique=True, db_index=True)
     monthly_installment = models.DecimalField(
         max_digits=15,
         decimal_places=2

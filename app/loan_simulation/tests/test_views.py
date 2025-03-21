@@ -1,9 +1,18 @@
+from uuid import uuid4
+
 import pytest
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND
+)
 from rest_framework.test import APIClient
+
+from loan_simulation.models.loan_simulation import LoanSimulation
 
 pytestmark = pytest.mark.django_db
 
@@ -26,6 +35,16 @@ def make_post_request(
 ) -> Response:
     api.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
     return api.post(endpoint, data=data, format='json')
+
+
+def make_get_request(
+    api: APIClient,
+    token: Token,
+    endpoint: str,
+    params: str
+) -> Response:
+    api.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+    return api.get(f'{endpoint}{params}/', format='json')
 
 
 class TestSimulateLoanView:
@@ -68,10 +87,10 @@ class TestSimulateLoanView:
         'document_number', ['12345678902', '123456789', 'xablau']
     )
     def test_should_return_error_400_if_client_document_number_is_invalid(
-            self,
-            loan_simulation_payload,
-            endpoint,
-            document_number
+        self,
+        loan_simulation_payload,
+        endpoint,
+        document_number
     ):
         loan_simulation_payload['user']['document_number'] = document_number
 
@@ -82,3 +101,52 @@ class TestSimulateLoanView:
         )
 
         assert response.status_code == HTTP_400_BAD_REQUEST
+
+
+class TestSimulateLoanDetailView:
+
+    @pytest.fixture
+    def endpoint(self):
+        return '/simulate-loan/'
+
+    def test_should_return_simulated_loan_by_simulation_id(
+        self,
+        loan_simulation_payload,
+        endpoint
+    ):
+        token = obtain_token()
+
+        response = make_post_request(
+            api(),
+            token,
+            endpoint,
+            loan_simulation_payload
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+
+        simulation_valid = LoanSimulation.objects.all()[0]
+
+        get_response = make_get_request(
+            api(),
+            token,
+            endpoint,
+            simulation_valid.simulation_id
+        )
+
+        assert get_response.status_code == HTTP_200_OK
+
+    def test_should_return_404_when_simulation_id_does_not_exists(
+            self,
+            loan_simulation_payload,
+            endpoint
+    ):
+        token = obtain_token()
+        get_response = make_get_request(
+            api(),
+            token,
+            endpoint,
+            str(uuid4())
+        )
+
+        assert get_response.status_code == HTTP_404_NOT_FOUND

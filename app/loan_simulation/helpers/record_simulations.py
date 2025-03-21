@@ -5,7 +5,7 @@ from loan_simulation.models.loan_simulation import Customer, LoanSimulation
 
 
 def save_customer_model(user: User) -> Customer:
-    saved_customer= search_customer_by_document_number(user)
+    saved_customer = search_customer_by_document_number(user)
 
     if saved_customer:
         return saved_customer
@@ -40,12 +40,25 @@ def save_loan_simulation(
         return simulation
 
 
-def search_customer_by_document_number(user: User) -> Customer | None:
+def search_customer_by_document_number(
+    user: User
+) -> Customer | None:
     customer = Customer.objects.filter(
-        document_number__exact=user.document_number
+        document_number=user.document_number
     )
 
     if customer:
         return customer
     return None
 
+
+def search_loan_simulation_by_simulation_id(
+    simulation_id: str
+) -> LoanSimulation | None:
+    loan_simulation = LoanSimulation.objects.filter(
+        simulation_id=simulation_id
+    )
+
+    if loan_simulation:
+        return loan_simulation[0]
+    return None

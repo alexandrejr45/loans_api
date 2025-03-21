@@ -38,6 +38,7 @@ def loan_simulation_request_model(loan_simulation_payload):
         payment_period=40
     )
 
+
 @pytest.fixture
 def loan_simulation_response_model(loan_simulation_payload):
     return LoanSimulationResponse(

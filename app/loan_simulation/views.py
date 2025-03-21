@@ -5,14 +5,21 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.status import (
+    HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
     HTTP_500_INTERNAL_SERVER_ERROR
 )
 from rest_framework.views import APIView
 
 from loan_simulation.helpers.calculate_simulations import (
     calculate_loan_simulation
+)
+from loan_simulation.helpers.converters import convert_loan_model_to_dataclass
+from loan_simulation.helpers.record_simulations import (
+    save_loan_simulation,
+    search_loan_simulation_by_simulation_id
 )
 from loan_simulation.serializers import LoanSimulationSerializer
 
@@ -72,6 +79,7 @@ class SimulateLoanView(APIView):
                 loan_simulation_result = calculate_loan_simulation(
                     serializer.save()
                 )
+                save_loan_simulation(loan_simulation_result)
 
                 return Response(
                     status=HTTP_201_CREATED,
@@ -84,6 +92,41 @@ class SimulateLoanView(APIView):
             )
 
         except ValidationError as e:
-            return Response(HTTP_400_BAD_REQUEST, exception=e)
+            return Response(status=HTTP_400_BAD_REQUEST, exception=e)
         except Exception as e:
-            return Response(HTTP_500_INTERNAL_SERVER_ERROR, exception=e)
+            return Response(
+                status=HTTP_500_INTERNAL_SERVER_ERROR,
+                exception=e
+            )
+
+
+class SimulateLoanDetailView(APIView):
+
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, simulation_id, format=None):
+        """
+            Endpoint to return a loan simulation by id
+
+        """
+        try:
+            loan_simulation_result = convert_loan_model_to_dataclass(
+                search_loan_simulation_by_simulation_id(simulation_id)
+            )
+
+            if loan_simulation_result:
+                return Response(
+                    status=HTTP_200_OK,
+                    data=asdict(loan_simulation_result)
+                )
+
+            return Response(
+                status=HTTP_404_NOT_FOUND,
+                data={'error': 'Loan simulations was not found'}
+            )
+
+        except ValidationError as e:
+            return Response(status=HTTP_400_BAD_REQUEST, exception=e)
+        except Exception as e:
+            return Response(status=HTTP_500_INTERNAL_SERVER_ERROR, exception=e)

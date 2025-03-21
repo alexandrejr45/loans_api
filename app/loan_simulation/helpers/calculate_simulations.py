@@ -19,13 +19,14 @@ def calculate_loan_simulation(
     total_amount = Decimal(
         monthly_installment * loan_simulation.payment_period
     )
-    total_interest_amount = Decimal(total_amount - loan_simulation.amount)
 
     return LoanSimulationResponse(
         id=uuid4(),
         monthly_installment=monthly_installment,
-        total_amount=total_amount,
-        total_interest_amount=total_interest_amount,
+        total_amount=Decimal(
+            monthly_installment * loan_simulation.payment_period
+        ),
+        total_interest_amount=Decimal(total_amount - loan_simulation.amount),
         user=loan_simulation.user
     )
 
@@ -36,9 +37,8 @@ def calculate_monthly_installments(
     interest_rate = calculate_interest_rate(
         loan_simulation.user.birthdate
     ) / 12
-    loan_amount = loan_simulation.amount
     monthly_installment = Decimal(
-        (loan_amount * interest_rate) /
+        (loan_simulation.amount * interest_rate) /
         Decimal(1 - pow(1 + interest_rate, -loan_simulation.payment_period))
     ).quantize(Decimal('0.00'))
 
